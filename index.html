@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Peas On Earth</title>
+
+    <!-- Including the main.css file for styling -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Including the Font Awesome CSS library for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+    <!-- Navigation bar -->
+     <div class="topnav" id="myTopnav">
+  <a class="active" href="index.html"><i class="fa fa-home"></i> Project Description</a>
+  <a href="combinedmaps.html"><i class="fa fa-map-marker"></i> Light Rail</a>
+  <a href="ppatches.html"><i class="fa fa-leaf"></i> P Patches</a>
+  <a href="team.html"><i class="fa fa-handshake-o"></i> Meet the Team</a>
+  <a href="acknowledgements.html"><i class="fa fa-list"></i> Acknowledgements</a>
+  <a href="javascript:void(0);" class="icon" onclick="toggleTopnav()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<script>
+/* Toggle responsive class on small screens */
+function toggleTopnav() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+</script>
+
+ <!-- Page content -->
+
+</div>
+<div class="content">
+
+    <!-- Main Page Title -->
+    <strong>What is a P Patch and why do they matter to Seattle?</strong>
+
+    <!-- Card 1: Overview -->
+    <div class="card">
+        <h2><i class="fa fa-leaf"></i> Project Overview</h2>
+        <p>
+            This project maps Seattle’s P-Patch community gardens alongside the city’s light rail network 
+            to help residents more easily locate accessible, local, and nutritious food options. 
+            In a city where transit access and healthy food availability vary widely by neighborhood,
+            this tool aims to bridge the gap by visualizing how close community members are 
+            to fresh produce grown in their own communities.
+        </p>
+    </div>
+
+    <!-- Card 2: Data Integration -->
+    <div class="card">
+        <h2><i class="fa fa-map"></i> Data Integration</h2>
+        <p>
+            At its core, the project integrates publicly available geospatial datasets, 
+            specifically P-Patch garden locations and Sound Transit light rail station data. 
+            By cleaning and mapping these datasets together, this tool highlights areas where transit 
+            accessibility and local food sources intersect, as well as areas where access is limited.
+        </p>
+        <p>
+            The map is designed to be simple, intuitive, and visually clear, enabling users to quickly 
+            understand what’s nearby, how to get there, and what opportunities exist to participate in 
+            Seattle’s urban agriculture network.
+        </p>
+    </div>
+
+    <!-- Card 3: Food Equity -->
+    <div class="card">
+        <h2><i class="fa fa-handshake-o"></i> Food Equity & Community Impact</h2>
+        <p>
+            Beyond producing a useful interactive map, the project also explores broader questions about 
+            food equity, transit connectivity, and the role of community gardens in supporting sustainable, 
+            community-driven food systems. Many Seattle residents, especially those in transit-dependent 
+            or under-resourced neighborhoods, face structural barriers to reaching affordable, healthy food.
+        </p>
+        <p>
+            By making this spatial information easy to explore, the project supports residents, planners, 
+            and community advocates in identifying gaps, proposing interventions, and celebrating the areas 
+            where local food access is already thriving.
+        </p>
+    </div>
+
+    <!-- Card 4: Purpose -->
+    <div class="card">
+        <h2><i class="fa fa-heart"></i> Why This Matters</h2>
+        <p>
+            Ultimately, this project emphasizes that healthy, culturally diverse, and locally grown food 
+            should be within reach for everyone. By combining open data with thoughtful design, 
+            it aims to empower individuals, strengthen community connections, 
+            and contribute to a more equitable and sustainable Seattle.
+        </p>
+    </div>
+
+    <!-- Images -->
+    <img src="https://www.seattle.gov/images//images/Departments/Neighborhoods/Featured/Cards%20310x160/Garden_Wide_930x480.png" 
+         alt="Seattle Community Garden">
+
+    <img src="https://www.mountaineers.org/activities/routes-places/seattles-p-patches/@@images/image" 
+         alt="P Patch">
+
+</div>
+
+</div>
+
+    <!-- Including the main.js file for JavaScript functionality -->
+    <script src="js/main.js"></script>
+
+<body>
+
+</html>

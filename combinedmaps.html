@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Seattle P-Patches and Transit Accessibility</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+
+<!-- Mapbox -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+
+<style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+    .map-overlay {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        z-index: 10;
+        overflow: auto;
+    }
+
+    #features { top: 20px; left: 20px; width: 300px; max-height: 180px; }
+    #legend { bottom: 20px; left: 20px; width: 180px; font-size: 14px; line-height: 22px; }
+
+    .legend-key {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-right: 5px;
+        border-radius: 50%;
+        vertical-align: middle;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<div class="map-overlay" id="features">
+    <h2>Seattle P-Patches and Lightrail Stations</h2>
+    <div id="text-description"><p>Hover over a P-Patch (orange carrot)!</p></div>
+</div>
+
+<div class="map-overlay" id="legend"></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoidHdpY2tzMTIiLCJhIjoiY21oY3Q4N3B5MDZ2ajJqcHJ1a2J2MDJndCJ9._kVEEl26EulxbWBVv52oMQ';
+
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/twicks12/cmim4x0i1005g01sqgq5mblfy',
+    zoom: 10,
+    center: [-122.3, 47.5]
+});
+
+// Load GeoJSON data
+async function loadData() {
+    const lightrailResp = await fetch('assets/clean_lightrail.geojson');
+    const lightrail = await lightrailResp.json();
+
+    const ppatchResp = await fetch('assets/P_Patches.geojson');
+    const ppatches = await ppatchResp.json();
+
+    map.on('load', () => {
+        // Lightrail layer
+        map.addSource('lightrail', { type: 'geojson', data: lightrail });
+        map.addLayer({
+            id: 'lightrail-layer',
+            type: 'circle',
+            source: 'lightrail',
+            paint: {
+                'circle-radius': 8,
+                'circle-color': 'blue',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': 'white'
+            }
+        });
+
+    // CLICK EVENT — Draw driving path to nearest station
+    map.on("click", "ppatches-layer", function (e) {
+
+        const clicked = e.features[0];
+        const [px, py] = clicked.geometry.coordinates;
+
+    // --- Find nearest station ---
+    let nearest = null;
+    let minDist = Infinity;
+
+    lightrail.features.forEach(st => {
+        const [sx, sy] = st.geometry.coordinates;
+        const d = Math.hypot(px - sx, py - sy);
+        if (d < minDist) {
+            minDist = d;
+            nearest = st;
+        }
+    });
+
+    if (!nearest) return;
+
+    const [sx, sy] = nearest.geometry.coordinates;
+
+    // --- Directions API request ---
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${px},${py};${sx},${sy}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            const route = data.routes[0].geometry;
+
+            // Update line source with the real route
+            map.getSource("nearest-line").setData({
+                "type": "Feature",
+                "geometry": route
+            });
+
+            // Zoom to the clicked patch
+            map.easeTo({ center: clicked.geometry.coordinates, zoom: 13 });
+        });
+});
+
+        // P-Patch carrot icon
+        const carrotUrl = 'https://raw.githubusercontent.com/twickss/finalproject/main/assets/Carrot.png';
+        map.loadImage(carrotUrl, (error, image) => {
+            if (error) throw error;
+            map.addImage('carrot-icon', image);
+
+            map.addSource('ppatches', { type: 'geojson', data: ppatches });
+            map.addLayer({
+                id: 'ppatches-layer',
+                type: 'symbol',
+                source: 'ppatches',
+                layout: {
+                    'icon-image': 'carrot-icon',
+                    'icon-size': 0.06,
+                    'icon-allow-overlap': true
+                }
+            });
+
+            // --- Empty line source for nearest-station line ---
+            map.addSource("nearest-line", {
+                type: "geojson",
+                data: { "type": "FeatureCollection", "features": [] }
+            });
+
+            map.addLayer({
+                id: "nearest-line-layer",
+                type: "line",
+                source: "nearest-line",
+                paint: {
+                    "line-width": 4,
+                    "line-color": "black"
+                }
+            });
+
+        });
+
+        // Hover popup
+        map.on('mousemove', ({ point }) => {
+            const features = map.queryRenderedFeatures(point, { layers: ['ppatches-layer'] });
+            document.getElementById('text-description').innerHTML = features.length ?
+                `<h3>Name: <em>${features[0].properties.NAME}</em></h3>
+                 <p><strong>Address: <em>${features[0].properties.ADDRESS}</em></strong></p>` :
+                `<p>Hover over a P-Patch (orange carrot)!</p>`;
+        });
+
+        // Click event on P-Patches to draw line to nearest station
+map.on("click", "ppatches-layer", function (e) {
+    const clicked = e.features[0];
+    const [px, py] = clicked.geometry.coordinates;
+
+    // Find nearest light rail station
+    let nearest = null;
+    let minDist = Infinity;
+
+    lightrail.features.forEach(st => {
+        const [sx, sy] = st.geometry.coordinates;
+        const dist = Math.hypot(px - sx, py - sy);
+        if (dist < minDist) {
+            minDist = dist;
+            nearest = st;
+        }
+    });
+
+    if (!nearest) return;
+
+    // Create line between P-patch and nearest station
+    const line = {
+        type: "Feature",
+        geometry: {
+            type: "LineString",
+            coordinates: [
+                [px, py],
+                nearest.geometry.coordinates
+            ]
+        }
+    };
+
+    // Update the line source
+    map.getSource("nearest-line").setData({
+        type: "FeatureCollection",
+        features: [line]
+    });
+});
+
+        // Legend
+        const legend = document.getElementById('legend');
+        legend.innerHTML = "<b>Legend</b><br><br>";
+
+        // P-Patch
+        const ppatchItem = document.createElement('div');
+        const img = document.createElement('img');
+        img.src = carrotUrl;
+        img.style.width = '16px';
+        img.style.height = '16px';
+        img.style.verticalAlign = 'middle';
+        img.style.marginRight = '5px';
+        ppatchItem.appendChild(img);
+        ppatchItem.appendChild(document.createTextNode('P-Patch'));
+        legend.appendChild(ppatchItem);
+
+        // Lightrail
+        const lrItem = document.createElement('div');
+        const lrKey = document.createElement('span');
+        lrKey.className = 'legend-key';
+        lrKey.style.backgroundColor = 'blue';
+        lrItem.appendChild(lrKey);
+        lrItem.appendChild(document.createTextNode(' Lightrail Station'));
+        legend.appendChild(lrItem);
+    });
+}
+
+loadData();
+</script>
+
+</body>
+</html>

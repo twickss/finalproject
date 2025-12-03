@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>P-Patches Time Slider (Carrot Icons)</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
+
+<style>
+  body { margin: 0; padding: 0; }
+  #map { width: 100%; height: 90vh; }
+  #slider-container {
+      width: 90%;
+      margin: 15px auto;
+      text-align: center;
+  }
+  #year-value { font-weight: bold; }
+</style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<div id="slider-container">
+  <input id="year-slider" type="range" min="1970" max="2025" step="1" value="1970" />
+  <div>Showing p-patches established by: <span id="year-value">1970</span></div>
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoidHdpY2tzMTIiLCJhIjoiY21oY3Q4N3B5MDZ2ajJqcHJ1a2J2MDJndCJ9._kVEEl26EulxbWBVv52oMQ';
+
+// Initialize Map
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/twicks12/cmim4x0i1005g01sqgq5mblfy',
+    center: [-122.335, 47.62],
+    zoom: 10
+});
+
+// Load Layers on Map Load
+map.on('load', () => {
+
+    map.addSource('ppatches', {
+        type: 'geojson',
+        data: { "type": "FeatureCollection", "features": [] }
+    });
+
+    // Load carrot icon from GitHub
+    map.loadImage(
+        'https://raw.githubusercontent.com/twickss/finalproject/main/assets/Carrot.png',
+        (error, image) => {
+            if (error) throw error;
+
+            map.addImage('carrot-icon', image);
+
+            map.addLayer({
+                id: 'ppatches-layer',
+                type: 'symbol',
+                source: 'ppatches',
+                layout: {
+                    'icon-image': 'carrot-icon',
+                    'icon-size': 0.06,
+                    'icon-allow-overlap': true
+                }
+            });
+
+            // Initial filter
+            map.setFilter('ppatches-layer', ['<=', ['get', 'DATE_ESTAB'], 1970]);
+
+            // Load GeoJSON
+            loadGeoJSON("https://raw.githubusercontent.com/twickss/finalproject/main/assets/P_Patches.geojson");
+        }
+    );
+});
+
+// Load GeoJSON from URL
+async function loadGeoJSON(url) {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        map.getSource('ppatches').setData(data);
+        console.log("Loaded dataset:", data);
+    } catch (err) {
+        console.error("Failed to load GeoJSON:", err);
+    }
+}
+
+// Slider behavior
+const slider = document.getElementById('year-slider');
+const yearValue = document.getElementById('year-value');
+
+slider.addEventListener('input', (e) => {
+    const year = parseInt(e.target.value);
+    yearValue.textContent = year;
+
+    map.setFilter('ppatches-layer', [
+        "<=",
+        ["get", "DATE_ESTAB"],
+        year
+    ]);
+});
+</script>
+
+</body>
+</html>
+
