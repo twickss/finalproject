@@ -33,6 +33,9 @@ When users open the P-Patches map, the timeline slider displays all gardens esta
 
 ## Data Sources
 
+- [Light Rail Stops](https://data-seattlecitygis.opendata.arcgis.com/datasets/SeattleCityGIS::light-rail-stations-1/explore?location=47.563849%2C-122.288064%2C11.51l)
+- [P-Patches Locations](https://www.seattle.gov/neighborhoods/p-patch-gardening/map-of-gardens)
+
 ## Applied Libaries & Web Services
 Mapbox GL JS 
 
