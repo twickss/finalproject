@@ -37,8 +37,8 @@ When users open the P-Patches map, the timeline slider displays all gardens esta
 - [P-Patches Locations](https://www.seattle.gov/neighborhoods/p-patch-gardening/map-of-gardens)
 
 ## Applied Libaries & Web Services
-Mapbox GL JS 
-
+- Mapbox GL JS – interactive web mapping and layer visualization
+- GitHub & GitHub Pages - version control and project hosting
 
 ## Acknowledgements
 Thanks to Professor Bo Zhao, for providing the foundation, framework, and inspiration that made this project possible.
