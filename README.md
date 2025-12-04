@@ -14,6 +14,15 @@ Beyond producing a useful interactive map, the project also explores broader que
 By making this spatial information easy to explore, the project supports residents, planners, and community advocates in identifying gaps, proposing interventions, and celebrating the areas where local food access is already thriving.
 
 ## Main Functions
+When users first open the site, they land on a main page featuring a navigation bar that directs them to all project sections, including Light Rail, P-Patches, Meet the Team, Acknowledgements, and Games. 
+
+![intro](assets/intro_screen.png)
+
+On the light rail map it shows stations in blue points and P-Patches appear as carrot icons. Usera can see all the P-Patches and draws a route to it based on their lightrail station. Users can also click on any P-Patch to view a pop-up displaying its name and address.
+
+When users zoom in slightly the map switches to a 2D view showing more detailed information about the surrounding areas. And when users zoom in even more while holding CTRL it activates a 3D perspectives.
+
+When users open the P-Patches map, the timeline slider displays all gardens established between 1970 and 2025 (with the earliest P-Patch in our dataset in 1973).
 
 ## Data Sources
 
