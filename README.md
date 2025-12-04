@@ -6,7 +6,7 @@ This project maps Seattle's P-Patch community gardens alongside the city's light
 Project url (here)
 
 ## Favicon 
-Carrot.png
+![carrot](assets/Carrot.png)
 
 ## Project Goal
 Beyond producing a useful interactive map, the project also explores broader questions about food equity, transit connectivity, and the role of community gardens in supporting sustainable, community-driven food systems. Many Seattle residents, especially those in transit-dependent or under-resourced neighborhoods, face structural barriers to reaching affordable, healthy food.
