@@ -20,9 +20,16 @@ When users first open the site, they land on a main page featuring a navigation 
 
 On the light rail map it shows stations in blue points and P-Patches appear as carrot icons. Usera can see all the P-Patches and draws a route to it based on their lightrail station. Users can also click on any P-Patch to view a pop-up displaying its name and address.
 
+![direction](assets/lightrail_direction.png)
+
 When users zoom in slightly the map switches to a 2D view showing more detailed information about the surrounding areas. And when users zoom in even more while holding CTRL it activates a 3D perspectives.
 
+![direction2D](assets/lightrail_2d.png)
+![direction3D](assets/lightrail_3d.png)
+
 When users open the P-Patches map, the timeline slider displays all gardens established between 1970 and 2025 (with the earliest P-Patch in our dataset in 1973).
+
+![ppatches](assets/ppatches_slider.png)
 
 ## Data Sources
 
